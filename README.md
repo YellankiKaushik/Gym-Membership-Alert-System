@@ -1,248 +1,212 @@
-🏋️ FitZone Gym – Membership Management System
+# 🏋️ FitZone Gym – Membership Management System
 
-
-
-
-
-
-
-
-🔗 Live Application
+🔗 **Live Application**  
 https://yellankikaushik.github.io/Gym-Membership/
 
-🚀 Overview
+---
 
-FitZone Gym – Membership Management System is a full-stack, production-grade application designed to replace spreadsheet-based gym management with a clean, secure, and intelligent system.
+## 🚀 Overview
+
+**FitZone Gym – Membership Management System** is a full-stack, production-grade application designed to replace spreadsheet-based gym management with a clean, secure, and intelligent system.
 
 The project focuses on:
 
-Admin efficiency
+- Admin efficiency  
+- Membership expiry intelligence  
+- Zero-cost serverless backend  
+- Real-world business applicability  
 
-Membership expiry intelligence
+This system is **not a demo toy** — it is architected like a lean SaaS product.
 
-Zero-cost serverless backend
+---
 
-Real-world business applicability
+## 👤 Member Features (Public / Read-Only)
 
-This system is not a demo toy — it is architected like a lean SaaS product.
+- Member lookup using **Member ID**
+- View membership status (**Active / Expired**)
+- Membership plans supported:
+  - 3 Months
+  - 6 Months
+  - 1 Year
+- Start date & expiry date
+- Remaining days displayed
+- Phone number masking for privacy
+- No authentication required for members
 
-👤 Member Features (Public / Read-Only)
+---
 
-Member lookup using Member ID
+## 🛠️ Admin Panel (Private & Secure)
 
-View membership status (Active / Expired)
+- Password-protected admin login
+- Add new members
+- Edit existing members
+- Renew memberships
+- Delete members
+- Status-based filtering:
+  - All
+  - Active
+  - Expired
+- Professional, responsive UI
+- Zero direct database access for users
 
-Membership plans supported:
+---
 
-3 Months
+## 🔔 Core USP — Admin Expiry Alert Engine
 
-6 Months
+This is the **key differentiator** of the project.
 
-1 Year
+The system includes a **fully automated admin-only email alert engine** that proactively informs the gym owner about expiring memberships.
 
-Start date & expiry date
+### ✅ What It Does
 
-Remaining days displayed
+- Automatically checks membership expiry dates
+- Sends alerts **only to the admin email**
+- Triggers alerts when a membership:
+  - Expires today
+  - Expires tomorrow
+  - Expires in 2 days
+  - Is already expired
+- Sends **one-time notification per member**
+- No duplicate emails
+- No third-party services
 
-Phone number masking for privacy
-
-No authentication required for members
-
-🛠️ Admin Panel (Private & Secure)
-
-Admin authentication (password-protected)
-
-Add new members
-
-Edit existing members
-
-Renew memberships
-
-Delete members
-
-Filter by:
-
-All
-
-Active
-
-Expired
-
-Professional, responsive UI
-
-Zero direct database access for users
-
-🔔 Core USP — Admin Expiry Alert Engine
-
-This is the key differentiator of the project.
-
-The system includes a fully automated admin-only email alert engine that proactively informs the gym owner about expiring memberships.
-
-✅ What It Does
-
-Automatically checks membership expiry dates
-
-Sends alerts only to the admin email
-
-Triggers alerts when a membership:
-
-Expires today
-
-Expires tomorrow
-
-Expires in 2 days
-
-Is already expired
-
-Sends one-time notification per member
-
-No duplicate emails
-
-No third-party services
-
-✅ Why This Matters
+### ✅ Why This Matters
 
 Admins don’t need to:
 
-Open spreadsheets
+- Open spreadsheets
+- Manually check expiry dates
+- Remember renewals
 
-Manually check dates
+**USP statement for demos:**
 
-Remember renewals
+> “The system proactively informs the admin before revenue is lost.”
 
-This becomes a strong demo USP:
+---
 
-“The system proactively informs the admin before revenue is lost.”
+## 📧 Sample Email (Actual Format)
 
-📧 Sample Email (Actual Format)
+**Subject:**  
+`Membership Expiry Alert | FitZone`
 
-Subject:
-Membership Expiry Alert | FitZone
-
-Body:
-
+**Body:**
 Membership Alerts | FitZone
 
 Membership of below members is going to expire:
 
-1. ID: GYM004
-   Name: Kaushik
-   Phone: 7878787878
-   Status: Expires today
-   Ends: 2026-01-22
+ID: GYM004
+Name: Kaushik
+Phone: 7878787878
+Status: Expires today
+Ends: 2026-01-22
 
-2. ID: GYM005
-   Name: Rahul Kiran
-   Phone: 5656565656
-   Status: Expires in 2 days
-   Ends: 2026-01-24
+ID: GYM005
+Name: Rahul Kiran
+Phone: 5656565656
+Status: Expires in 2 days
+Ends: 2026-01-24
 
 With regards,
 FitZone, Hyderabad
 
-⏱️ How Email Automation Works (Important)
 
-Backend runs on Google Apps Script
+---
 
-A time-based trigger executes daily
+## ⏱️ How Email Automation Works
 
-Trigger runs the function:
-
+- Backend runs on **Google Apps Script**
+- A **time-based trigger** executes daily
+- Trigger calls:
 checkMembershipExpiries()
 
+- Script reads Google Sheets data
+- Sends alert email if conditions match
+- Marks rows as “notified” to avoid duplicate alerts
 
-Script checks Google Sheets data
+⚠️ **Backend code is intentionally not inside GitHub**  
+It runs securely inside Google Apps Script and connects directly to Google Sheets.
 
-Sends alert email if conditions match
+---
 
-Marks rows as “notified” to avoid duplicates
+## 🧱 System Architecture
 
-⚠️ Backend code is intentionally NOT inside GitHub
-It lives securely inside Google Apps Script, connected to Google Sheets.
-
-🧱 System Architecture
 React + TypeScript (Frontend)
-        ↓
+↓
 Google Apps Script (Backend API)
-        ↓
+↓
 Google Sheets (Database)
-        ↓
+↓
 Gmail Service (Admin Alerts)
 
 
 This architecture is:
 
-Serverless
+- Serverless  
+- Cost-free  
+- Secure  
+- Scalable for small businesses  
 
-Cost-free
+---
 
-Secure
+## 🧑‍💻 Tech Stack
 
-Scalable for small businesses
+### Frontend
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Framer Motion
 
-🧑‍💻 Tech Stack
-Frontend
+### Backend
+- Google Apps Script
+- Google Sheets (Database)
+- GmailApp (Email Engine)
 
-React + TypeScript
+### Deployment
+- GitHub Pages (`/docs` folder)
 
-Vite
+---
 
-Tailwind CSS
+## 📂 Project Structure
 
-Framer Motion
-
-Backend
-
-Google Apps Script
-
-Google Sheets (as DB)
-
-GmailApp (Email engine)
-
-Deployment
-
-GitHub Pages (/docs folder)
-
-📂 Project Structure
 Gym-Membership/
 ├── src/
-│   ├── pages/
-│   ├── api/
-│   └── config/
-├── docs/            # GitHub Pages build output
+│ ├── pages/
+│ ├── api/
+│ └── config/
+├── docs/ # GitHub Pages build output
 ├── public/
 ├── README.md
 └── vite.config.ts
 
-🎯 Why This Project Is Strong
 
-Solves a real business problem
+---
 
-No paid services required
+## 🎯 Why This Project Is Strong
 
-Clean separation of frontend & backend
+- Solves a real business problem
+- Zero paid services
+- Clean frontend/backend separation
+- Admin-first intelligence (USP)
+- Excellent interview & demo project
+- Shows system design thinking, not just UI
 
-Secure admin-only automation
+---
 
-Excellent interview & demo project
+## 🔮 Future Enhancements
 
-Shows real system thinking, not just UI
+- SMS alerts to members
+- Payment & billing history
+- Analytics dashboard
+- Multi-branch gym support
+- Role-based access control
 
-🔮 Future Enhancements
+---
 
-SMS alerts to members
+## 👨‍💼 Author
 
-Payment & billing history
-
-Analytics dashboard
-
-Multi-branch gym support
-
-Role-based access control
-
-👨‍💼 Author
-
-Kaushik
+**Kaushik**  
 India 🇮🇳
+
+---
 
 ⭐ If this project helped or inspired you, consider starring the repository.
