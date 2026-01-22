@@ -1,8 +1,22 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, User, Phone, Calendar, Award, Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import {
+  Search,
+  User,
+  Phone,
+  Calendar,
+  Award,
+  Clock,
+  Loader2,
+  XCircle,
+} from 'lucide-react';
 import { lookupMember, getApiUrl } from '../api/gymApi';
 import type { Member } from '../types/member';
+
+// Gym gallery images
+import gym1 from '../assets/gym/gym1.jpg';
+import gym2 from '../assets/gym/gym2.jpg';
+import gym3 from '../assets/gym/gym3.jpg';
 
 export default function MemberLookup() {
   const [memberId, setMemberId] = useState('');
@@ -13,7 +27,7 @@ export default function MemberLookup() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!memberId.trim()) {
       setError('Please enter a Member ID');
       return;
@@ -31,14 +45,13 @@ export default function MemberLookup() {
 
     try {
       const response = await lookupMember(memberId.trim());
-      
       if (response.success && response.member) {
         setMember(response.member);
       } else {
         setError(response.error || 'Member not found');
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+    } catch {
+      setError('An error occurred');
     } finally {
       setLoading(false);
     }
@@ -52,31 +65,25 @@ export default function MemberLookup() {
   };
 
   return (
-    <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
-      {/* Header */}
-      <header className="pt-8 pb-4 px-4">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-4 shadow-lg shadow-purple-500/30">
+    <div className="min-h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
+      {/* HEADER */}
+      <header className="pt-8 pb-4 px-4 text-center">
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-4 shadow-lg">
             <Award className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Gym Membership</h1>
-          <p className="text-purple-200/70">Check your membership status</p>
+          <h1 className="text-3xl font-bold text-white">Gym Membership</h1>
         </motion.div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 px-4 pb-8">
+      {/* MAIN */}
+      <main className="flex-1 px-4 pb-16">
         <div className="max-w-md mx-auto">
-          {/* Search Form */}
-          <motion.form 
+          {/* SEARCH FORM */}
+          <motion.form
+            onSubmit={handleSearch}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            onSubmit={handleSearch}
             className="mb-6"
           >
             <div className="relative">
@@ -87,17 +94,18 @@ export default function MemberLookup() {
                 type="text"
                 value={memberId}
                 onChange={(e) => setMemberId(e.target.value.toUpperCase())}
-                placeholder="Enter Member ID (e.g., GYM001)"
-                className="w-full pl-12 pr-4 py-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder-purple-300/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="Enter Member ID"
+                className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                 disabled={loading}
               />
             </div>
+
             <motion.button
               type="submit"
               disabled={loading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full mt-4 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full mt-4 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-2xl shadow-lg flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -113,23 +121,15 @@ export default function MemberLookup() {
             </motion.button>
           </motion.form>
 
-          {/* Results */}
+          {/* RESULTS */}
           <AnimatePresence mode="wait">
             {error && searched && (
-              <motion.div
-                key="error"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="bg-red-500/20 backdrop-blur-lg border border-red-500/30 rounded-2xl p-6 text-center"
-              >
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-500/20 mb-4">
-                  <XCircle className="w-6 h-6 text-red-400" />
-                </div>
-                <p className="text-red-200 font-medium">{error}</p>
+              <motion.div className="bg-red-500/20 border border-red-500/30 rounded-2xl p-6 text-center">
+                <XCircle className="w-8 h-8 text-red-400 mx-auto mb-3" />
+                <p className="text-red-200">{error}</p>
                 <button
                   onClick={resetSearch}
-                  className="mt-4 text-sm text-red-300 hover:text-white transition-colors underline"
+                  className="mt-4 text-sm underline text-red-300"
                 >
                   Try again
                 </button>
@@ -137,152 +137,85 @@ export default function MemberLookup() {
             )}
 
             {member && (
-              <motion.div
-                key="result"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-4"
-              >
-                {/* Status Card */}
-                <div className={`relative overflow-hidden rounded-3xl p-6 ${
-                  member.status === 'Active' 
-                    ? 'bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30' 
-                    : 'bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30'
-                }`}>
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
-                  
-                  <div className="relative">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm font-medium text-white/70">Membership Status</span>
-                      <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold ${
-                        member.status === 'Active'
-                          ? 'bg-emerald-500/30 text-emerald-300'
-                          : 'bg-red-500/30 text-red-300'
-                      }`}>
-                        {member.status === 'Active' ? (
-                          <CheckCircle className="w-4 h-4" />
-                        ) : (
-                          <XCircle className="w-4 h-4" />
-                        )}
-                        {member.status}
-                      </div>
-                    </div>
-                    
-                    {member.status === 'Active' && member.daysRemaining !== undefined && (
-                      <div className="text-center py-4">
-                        <div className="text-5xl font-bold text-white mb-1">
-                          {member.daysRemaining}
-                        </div>
-                        <div className="text-emerald-300/70 text-sm">days remaining</div>
-                      </div>
-                    )}
-                    
-                    {member.status === 'Expired' && (
-                      <div className="text-center py-4">
-                        <div className="text-xl font-semibold text-red-300 mb-1">
-                          Membership Expired
-                        </div>
-                        <div className="text-red-300/70 text-sm">Please renew at the front desk</div>
-                      </div>
-                    )}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                <div
+                  className={`rounded-3xl p-6 border ${
+                    member.status === 'Active'
+                      ? 'bg-emerald-500/10 border-emerald-500/30'
+                      : 'bg-red-500/10 border-red-500/30'
+                  }`}
+                >
+                  <div className="flex justify-between mb-4">
+                    <span className="text-white/70">Membership Status</span>
+                    <span className={member.status === 'Active' ? 'text-emerald-400' : 'text-red-400'}>
+                      {member.status}
+                    </span>
                   </div>
+
+                  {member.status === 'Active' && (
+                    <div className="text-center">
+                      <div className="text-5xl font-bold">{member.daysRemaining}</div>
+                      <div className="text-sm text-emerald-300/70">days remaining</div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Member Details */}
-                <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-6 space-y-4">
-                  <h3 className="text-lg font-semibold text-white mb-4">Member Details</h3>
-                  
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                      <User className="w-5 h-5 text-purple-400" />
-                    </div>
-                    <div>
-                      <div className="text-xs text-purple-300/60 uppercase tracking-wide">Name</div>
-                      <div className="text-white font-medium">{member.name}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
-                      <Phone className="w-5 h-5 text-pink-400" />
-                    </div>
-                    <div>
-                      <div className="text-xs text-purple-300/60 uppercase tracking-wide">Phone</div>
-                      <div className="text-white font-medium">{member.phone}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                      <Award className="w-5 h-5 text-blue-400" />
-                    </div>
-                    <div>
-                      <div className="text-xs text-purple-300/60 uppercase tracking-wide">Membership Type</div>
-                      <div className="text-white font-medium">{member.membershipType}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-teal-400" />
-                    </div>
-                    <div>
-                      <div className="text-xs text-purple-300/60 uppercase tracking-wide">Valid Until</div>
-                      <div className="text-white font-medium">{member.endDate}</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-amber-400" />
-                    </div>
-                    <div>
-                      <div className="text-xs text-purple-300/60 uppercase tracking-wide">Member ID</div>
-                      <div className="text-white font-medium font-mono">{member.id}</div>
-                    </div>
-                  </div>
+                <div className="bg-white/10 border border-white/20 rounded-3xl p-6 space-y-4">
+                  <Detail icon={<User />} label="Name" value={member.name} />
+                  <Detail icon={<Phone />} label="Phone" value={member.phone} />
+                  <Detail icon={<Award />} label="Membership" value={member.membershipType} />
+                  <Detail icon={<Calendar />} label="Valid Until" value={member.endDate} />
+                  <Detail icon={<Clock />} label="Member ID" value={member.id} />
                 </div>
 
-                {/* Search Again Button */}
-                <motion.button
+                <button
                   onClick={resetSearch}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-3 bg-white/10 border border-white/20 text-white font-medium rounded-2xl hover:bg-white/20 transition-all"
+                  className="w-full py-3 bg-white/10 border border-white/20 rounded-2xl hover:bg-white/20"
                 >
                   Search Another Member
-                </motion.button>
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Initial State */}
-          {!searched && !member && !error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-center py-8"
-            >
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 mb-4">
-                <Search className="w-10 h-10 text-purple-400/50" />
-              </div>
-              <p className="text-purple-200/50 text-sm">
-                Enter your Member ID to check your membership status
-              </p>
-            </motion.div>
-          )}
         </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="py-4 px-4 text-center">
-        <p className="text-purple-300/40 text-xs">
-          For any issues, please contact the gym front desk
-        </p>
-      </footer>
+        {/* GALLERY */}
+        <section className="max-w-5xl mx-auto px-4 mt-20">
+          <h2 className="text-2xl font-bold text-center mb-6">FitZone Gallery</h2>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {[gym1, gym2, gym3].map((img, i) => (
+              <motion.img
+                key={i}
+                src={img}
+                whileHover={{ scale: 1.03 }}
+                className="rounded-2xl object-cover w-full h-48 shadow-lg border border-white/10"
+              />
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+function Detail({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-center gap-4">
+      <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+        {icon}
+      </div>
+      <div>
+        <div className="text-xs uppercase text-purple-300/60">{label}</div>
+        <div className="text-white font-medium">{value}</div>
+      </div>
     </div>
   );
 }
