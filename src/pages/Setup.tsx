@@ -36,7 +36,7 @@ export default function Setup({ onComplete }: SetupProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
+    <div className="h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col">
       <header className="pt-8 pb-4 px-4">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}

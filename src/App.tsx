@@ -1,64 +1,54 @@
-import { useEffect, useState } from 'react';
 import Setup from './pages/Setup';
 import MemberLookup from './pages/MemberLookup';
-import AdminPanel from './pages/AdminPanel';
-import { getApiUrl } from './api/gymApi';
-
-type Page = 'setup' | 'lookup' | 'admin';
+import AdminPanel from './pages/Adminpanel';
+import { useState } from 'react';
 
 export default function App() {
-  const [page, setPage] = useState<Page>('setup');
-
-  useEffect(() => {
-    const apiUrl = getApiUrl();
-    if (apiUrl) {
-      setPage('lookup');
-    }
-  }, []);
-
-  // 🔹 SETUP PAGE
-  if (page === 'setup') {
-    return <Setup onComplete={() => setPage('lookup')} />;
-  }
+  const [mode, setMode] = useState<'setup' | 'member' | 'admin'>(
+    localStorage.getItem('gymApiUrl') ? 'member' : 'setup'
+  );
 
   return (
-    <>
-      {/* 🔹 Top Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-lg border-b border-white/10">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <h1 className="text-white font-semibold tracking-wide">
-            Gym Membership System
-          </h1>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setPage('lookup')}
-              className={`px-4 py-2 rounded-xl text-sm transition-all ${
-                page === 'lookup'
-                  ? 'bg-white/20 text-white'
-                  : 'bg-white/5 text-purple-300 hover:bg-white/10'
-              }`}
-            >
-              Member Lookup
-            </button>
-            <button
-              onClick={() => setPage('admin')}
-              className={`px-4 py-2 rounded-xl text-sm transition-all ${
-                page === 'admin'
-                  ? 'bg-white/20 text-white'
-                  : 'bg-white/5 text-purple-300 hover:bg-white/10'
-              }`}
-            >
-              Admin Panel
-            </button>
-          </div>
+    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-[#0f172a] via-[#1e1b4b] to-[#020617] text-white flex flex-col">
+      
+      {/* HEADER */}
+      <header className="h-16 flex items-center justify-between px-6 border-b border-white/10">
+        <div className="text-xl font-bold tracking-wide">
+          FitZone
         </div>
+
+        <div className="text-sm text-purple-300">
+          Kiran · <span className="text-emerald-400">Certified Trainer</span>
+        </div>
+      </header>
+
+      {/* NAV */}
+      <nav className="h-14 flex justify-center gap-6 items-center border-b border-white/10 text-sm">
+        <button onClick={() => setMode('member')} className="hover:text-purple-300">
+          Member Lookup
+        </button>
+        <button onClick={() => setMode('admin')} className="hover:text-purple-300">
+          Admin Panel
+        </button>
       </nav>
 
-      {/* 🔹 PAGE CONTENT */}
-      <div className="pt-16">
-        {page === 'lookup' && <MemberLookup />}
-        {page === 'admin' && <AdminPanel />}
-      </div>
-    </>
+      {/* MAIN CONTENT */}
+      <main className="flex-1 overflow-hidden">
+        {mode === 'setup' && <Setup onComplete={() => setMode('member')} />}
+        {mode === 'member' && <MemberLookup />}
+        {mode === 'admin' && <AdminPanel />}
+      </main>
+
+      {/* FOOTER */}
+      <footer className="h-14 flex items-center justify-center border-t border-white/10 text-xs text-purple-300">
+        <a
+          href="https://share.google/Fu2K81GXoea6KE8AL"
+          target="_blank"
+          className="hover:text-white"
+        >
+          📍 Dilsukhnagar Metro Station · Hyderabad
+        </a>
+      </footer>
+    </div>
   );
 }
