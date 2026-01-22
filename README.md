@@ -1,187 +1,248 @@
+🏋️ FitZone Gym – Membership Management System
 
 
-# 🏋️ FitZone Gym – Membership Management System
 
-<span class="badge badge-green">LIVE</span>
-<span class="badge badge-blue">React</span>
-<span class="badge badge-blue">Google Apps Script</span>
-<span class="badge badge-red">Admin Alerts</span>
 
-🔗 **Live Application**  
+
+
+
+
+🔗 Live Application
 https://yellankikaushik.github.io/Gym-Membership/
 
----
+🚀 Overview
 
-## 🚀 Overview
+FitZone Gym – Membership Management System is a full-stack, production-grade application designed to replace spreadsheet-based gym management with a clean, secure, and intelligent system.
 
-**FitZone Gym** is a full-stack gym membership management system built to replace spreadsheets and manual tracking.
+The project focuses on:
 
-The system focuses on:
-- Admin productivity
-- Membership expiry intelligence
-- Zero-cost, serverless backend
+Admin efficiency
 
----
+Membership expiry intelligence
 
-## 👤 Member Features
+Zero-cost serverless backend
 
-<div class="box">
+Real-world business applicability
 
-- Member lookup using **Member ID**
-- View membership status
-- View plan duration:
-  - 3 Months
-  - 6 Months
-  - 1 Year
-- Start & expiry dates
-- Remaining days displayed
-- Phone number masked for privacy
+This system is not a demo toy — it is architected like a lean SaaS product.
 
-</div>
+👤 Member Features (Public / Read-Only)
 
----
+Member lookup using Member ID
 
-## 🛠️ Admin Panel
+View membership status (Active / Expired)
 
-<div class="box">
+Membership plans supported:
 
-- Secure admin authentication
-- Add / Edit / Delete members
-- Renew memberships
-- Status-aware filtering
-- Clean, professional UI
+3 Months
 
-</div>
+6 Months
 
----
+1 Year
 
-## 🔔 Core USP – Admin Expiry Alert Engine
+Start date & expiry date
 
-<div class="box">
+Remaining days displayed
 
-This project’s key differentiator.
+Phone number masking for privacy
 
-- Automated expiry email alerts
-- Emails sent **only to admin**
-- Alerts triggered when membership:
-  - Expires today
-  - Expires tomorrow
-  - Expires in 2 days
-  - Is expired
-- One-time notification per member
-- No third-party services
+No authentication required for members
 
-</div>
+🛠️ Admin Panel (Private & Secure)
 
-### 📧 Sample Email
+Admin authentication (password-protected)
 
+Add new members
+
+Edit existing members
+
+Renew memberships
+
+Delete members
+
+Filter by:
+
+All
+
+Active
+
+Expired
+
+Professional, responsive UI
+
+Zero direct database access for users
+
+🔔 Core USP — Admin Expiry Alert Engine
+
+This is the key differentiator of the project.
+
+The system includes a fully automated admin-only email alert engine that proactively informs the gym owner about expiring memberships.
+
+✅ What It Does
+
+Automatically checks membership expiry dates
+
+Sends alerts only to the admin email
+
+Triggers alerts when a membership:
+
+Expires today
+
+Expires tomorrow
+
+Expires in 2 days
+
+Is already expired
+
+Sends one-time notification per member
+
+No duplicate emails
+
+No third-party services
+
+✅ Why This Matters
+
+Admins don’t need to:
+
+Open spreadsheets
+
+Manually check dates
+
+Remember renewals
+
+This becomes a strong demo USP:
+
+“The system proactively informs the admin before revenue is lost.”
+
+📧 Sample Email (Actual Format)
+
+Subject:
 Membership Expiry Alert | FitZone
+
+Body:
 
 Membership Alerts | FitZone
 
 Membership of below members is going to expire:
 
-ID: GYM004
-Name: Kaushik
-Phone: 7878787878
-Status: Expires today
-Ends: 2026-01-22
+1. ID: GYM004
+   Name: Kaushik
+   Phone: 7878787878
+   Status: Expires today
+   Ends: 2026-01-22
 
-ID: GYM005
-Name: Rahul Kiran
-Phone: 5656565656
-Status: Expires in 2 days
-Ends: 2026-01-24
+2. ID: GYM005
+   Name: Rahul Kiran
+   Phone: 5656565656
+   Status: Expires in 2 days
+   Ends: 2026-01-24
 
 With regards,
 FitZone, Hyderabad
 
-yaml
-Copy code
+⏱️ How Email Automation Works (Important)
 
----
+Backend runs on Google Apps Script
 
-## 🧱 System Architecture
+A time-based trigger executes daily
 
-Frontend (React + Vite)
-↓
-Google Apps Script API
-↓
+Trigger runs the function:
+
+checkMembershipExpiries()
+
+
+Script checks Google Sheets data
+
+Sends alert email if conditions match
+
+Marks rows as “notified” to avoid duplicates
+
+⚠️ Backend code is intentionally NOT inside GitHub
+It lives securely inside Google Apps Script, connected to Google Sheets.
+
+🧱 System Architecture
+React + TypeScript (Frontend)
+        ↓
+Google Apps Script (Backend API)
+        ↓
 Google Sheets (Database)
-↓
-Gmail (Admin Alerts)
+        ↓
+Gmail Service (Admin Alerts)
 
-yaml
-Copy code
 
----
+This architecture is:
 
-## 🧑‍💻 Tech Stack
+Serverless
 
-### Frontend
-- React + TypeScript
-- Vite
-- Tailwind CSS
-- Framer Motion
+Cost-free
 
-### Backend
-- Google Apps Script
-- Google Sheets
-- Gmail Service
+Secure
 
-### Deployment
-- GitHub Pages (`/docs`)
+Scalable for small businesses
 
----
+🧑‍💻 Tech Stack
+Frontend
 
-## 📂 Project Structure
+React + TypeScript
 
+Vite
+
+Tailwind CSS
+
+Framer Motion
+
+Backend
+
+Google Apps Script
+
+Google Sheets (as DB)
+
+GmailApp (Email engine)
+
+Deployment
+
+GitHub Pages (/docs folder)
+
+📂 Project Structure
 Gym-Membership/
 ├── src/
-│ ├── pages/
-│ ├── api/
-│ └── config/
-├── docs/ # GitHub Pages build output
+│   ├── pages/
+│   ├── api/
+│   └── config/
+├── docs/            # GitHub Pages build output
 ├── public/
 ├── README.md
 └── vite.config.ts
 
-yaml
-Copy code
+🎯 Why This Project Is Strong
 
----
+Solves a real business problem
 
-## 🎯 Why This Project Matters
+No paid services required
 
-<div class="box">
+Clean separation of frontend & backend
 
-- Solves a real business problem
-- Serverless & cost-free backend
-- Clean system design
-- Strong interview & demo value
-- Admin-focused intelligence (USP)
+Secure admin-only automation
 
-</div>
+Excellent interview & demo project
 
----
+Shows real system thinking, not just UI
 
-## 🔮 Future Enhancements
+🔮 Future Enhancements
 
-- SMS alerts to members
-- Payment & billing history
-- Analytics dashboard
-- Multi-branch gym support
-- Role-based access control
+SMS alerts to members
 
----
+Payment & billing history
 
-## 👨‍💼 Author
+Analytics dashboard
 
-**Kaushik **  
+Multi-branch gym support
+
+Role-based access control
+
+👨‍💼 Author
+
+Kaushik
 India 🇮🇳
 
----
-
-<div class="footer">
-⭐ If this project helped you, consider starring the repository.
-</div>
+⭐ If this project helped or inspired you, consider starring the repository.
