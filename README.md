@@ -1,101 +1,4 @@
-<style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen;
-    background-color: #0f172a;
-    color: #e5e7eb;
-    line-height: 1.6;
-  }
 
-  h1, h2, h3 {
-    color: #38bdf8;
-    border-bottom: 1px solid #334155;
-    padding-bottom: 6px;
-  }
-
-  h1 {
-    font-size: 2.2rem;
-  }
-
-  h2 {
-    font-size: 1.6rem;
-    margin-top: 32px;
-  }
-
-  h3 {
-    font-size: 1.2rem;
-  }
-
-  a {
-    color: #22d3ee;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  code {
-    background-color: #020617;
-    color: #a5f3fc;
-    padding: 2px 6px;
-    border-radius: 6px;
-    font-size: 0.9em;
-  }
-
-  pre {
-    background-color: #020617;
-    padding: 16px;
-    border-radius: 12px;
-    overflow-x: auto;
-    border: 1px solid #1e293b;
-  }
-
-  ul {
-    margin-left: 20px;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 4px 10px;
-    margin-right: 8px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  .badge-green {
-    background-color: #064e3b;
-    color: #6ee7b7;
-  }
-
-  .badge-blue {
-    background-color: #0c4a6e;
-    color: #7dd3fc;
-  }
-
-  .badge-red {
-    background-color: #450a0a;
-    color: #fca5a5;
-  }
-
-  .box {
-    background-color: #020617;
-    border: 1px solid #1e293b;
-    padding: 16px;
-    border-radius: 14px;
-    margin: 20px 0;
-  }
-
-  .footer {
-    margin-top: 50px;
-    padding-top: 20px;
-    border-top: 1px dashed #334155;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #94a3b8;
-  }
-</style>
 
 # 🏋️ FitZone Gym – Membership Management System
 
@@ -274,8 +177,7 @@ Copy code
 
 ## 👨‍💼 Author
 
-**Kaushik Chary**  
-Full Stack Developer  
+**Kaushik **  
 India 🇮🇳
 
 ---
