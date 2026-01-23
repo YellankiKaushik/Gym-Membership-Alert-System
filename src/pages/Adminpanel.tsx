@@ -148,12 +148,18 @@ export default function AdminPanel() {
     setError(null);
   };
 
-  const handleAddMember = async () => {
+  const handleAddMember = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    e?.preventDefault(); // ✅ prevents form interference
+  
+    console.log('handleAddMember TRIGGERED');
+  
     setLoading(true);
     setError(null);
-
+  
     try {
       const response = await addMember(formData as NewMemberData);
+      console.log('addMember RESPONSE:', response);
+  
       if (response.success) {
         setSuccess('Member added successfully!');
         closeModal();
@@ -168,6 +174,7 @@ export default function AdminPanel() {
       setLoading(false);
     }
   };
+  
 
   const handleEditMember = async () => {
     if (!selectedMember) return;
@@ -642,23 +649,24 @@ export default function AdminPanel() {
                     />
                   </div>
                   <button
-                  type="button"
-                  onClick={() => {
-                    if (modal === 'add') handleAddMember();
-                    if (modal === 'edit') handleEditMember();
-                  }}
-                  disabled={loading}
-                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {loading ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                    <>
-                    <Save className="w-5 h-5" />
-                    {modal === 'add' ? 'Add Member' : 'Save Changes'}
-                    </>
-                  )}
-                  </button>
+  type="button"
+  onClick={(e) => {
+    if (modal === 'add') handleAddMember(e);
+    if (modal === 'edit') handleEditMember();
+  }}
+  disabled={loading}
+  className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+>
+  {loading ? (
+    <Loader2 className="w-5 h-5 animate-spin" />
+  ) : (
+    <>
+      <Save className="w-5 h-5" />
+      {modal === 'add' ? 'Add Member' : 'Save Changes'}
+    </>
+  )}
+</button>
+
 
                 </div>
               )}
