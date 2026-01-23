@@ -1,18 +1,30 @@
 // Gym Membership API Client
 // Connects to Google Apps Script backend
 
-import type { Member, MemberLookupResponse, MembersListResponse, ApiResponse, NewMemberData, RenewalData } from '../types/member';
+import type {
+  Member,
+  MemberLookupResponse,
+  MembersListResponse,
+  ApiResponse,
+  NewMemberData,
+  RenewalData
+} from '../types/member';
 
-// API Base URL - This will be replaced with your actual Google Apps Script URL
-// Instructions: After deploying your Apps Script, replace this URL
-const API_BASE_URL = localStorage.getItem('gymApiUrl') || '';
+/**
+ * CHANGE 1:
+ * Hard-set your deployed Google Apps Script Web App URL here
+ * (This guarantees requests always hit the sheet)
+ */
+const DEFAULT_API_URL =
+  'https://script.google.com/macros/s/AKfycby-_1PSNwCKbjGwFDnFCbxb37_1ZJaBEZkuCKhqIEdxisWuvAVT9cmyq9HWOLcAEnx3/exec';
+
 
 // Helper function to get the API URL
 export function getApiUrl(): string {
-  return localStorage.getItem('gymApiUrl') || '';
+  return localStorage.getItem('gymApiUrl') || DEFAULT_API_URL;
 }
 
-// Helper function to set the API URL
+// Helper function to set the API URL (optional override)
 export function setApiUrl(url: string): void {
   localStorage.setItem('gymApiUrl', url);
 }
@@ -38,197 +50,106 @@ export function isAdminLoggedIn(): boolean {
 }
 
 /**
- * Look up a member by ID (Public - Read Only)
+ * Public: Look up member by ID
+ * (Uses GET → correct for your Apps Script doGet)
  */
 export async function lookupMember(memberId: string): Promise<MemberLookupResponse> {
   const apiUrl = getApiUrl();
-  
-  if (!apiUrl) {
-    throw new Error('API URL not configured. Please set up the Google Apps Script URL first.');
-  }
 
-  try {
-    const url = `${apiUrl}?action=lookup&id=${encodeURIComponent(memberId)}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Lookup error:', error);
-    throw new Error('Failed to connect to the server. Please check your internet connection.');
-  }
+  const url = `${apiUrl}?action=lookup&id=${encodeURIComponent(memberId)}`;
+  const response = await fetch(url);
+  return response.json();
 }
 
 /**
- * Get all members (Admin only)
+ * Admin: Get all members
+ * (Uses GET → correct for doGet)
  */
 export async function getAllMembers(): Promise<MembersListResponse> {
   const apiUrl = getApiUrl();
   const password = getAdminPassword();
-  
-  if (!apiUrl) {
-    throw new Error('API URL not configured.');
-  }
-  
-  if (!password) {
-    throw new Error('Admin authentication required.');
-  }
 
-  try {
-    const url = `${apiUrl}?action=getAll&password=${encodeURIComponent(password)}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Get all members error:', error);
-    throw new Error('Failed to fetch members.');
-  }
+  const url = `${apiUrl}?action=getAll&password=${encodeURIComponent(password)}`;
+  const response = await fetch(url);
+  return response.json();
 }
 
 /**
- * Add a new member (Admin only)
+ * CHANGE 2:
+ * All CRUD actions → POST → JSON body → action + password
  */
-export async function addMember(memberData: NewMemberData): Promise<ApiResponse> {
+
+export async function addMember(
+  memberData: NewMemberData
+): Promise<ApiResponse> {
+  return postAdminAction({
+    action: 'addMember',
+    member: memberData
+  });
+}
+
+export async function updateMember(
+  memberData: Partial<Member> & { id: string }
+): Promise<ApiResponse> {
+  return postAdminAction({
+    action: 'updateMember',
+    member: memberData
+  });
+}
+
+export async function renewMembership(
+  renewalData: RenewalData
+): Promise<ApiResponse> {
+  return postAdminAction({
+    action: 'renewMember',
+    ...renewalData
+  });
+}
+
+export async function deleteMember(
+  memberId: string
+): Promise<ApiResponse> {
+  return postAdminAction({
+    action: 'deleteMember',
+    memberId
+  });
+}
+
+/**
+ * Centralized POST helper
+ * (Ensures all requests hit Apps Script correctly)
+ */
+async function postAdminAction(payload: any): Promise<ApiResponse> {
   const apiUrl = getApiUrl();
   const password = getAdminPassword();
-  
-  if (!apiUrl || !password) {
-    throw new Error('Authentication required.');
-  }
 
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain', // Apps Script requires this
-      },
-      body: JSON.stringify({
-        password,
-        action: 'addMember',
-        member: memberData,
-      }),
-    });
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Add member error:', error);
-    throw new Error('Failed to add member.');
-  }
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain' // REQUIRED for Apps Script
+    },
+    body: JSON.stringify({
+      password,
+      ...payload
+    })
+  });
+
+  return response.json();
 }
 
 /**
- * Update member details (Admin only)
- */
-export async function updateMember(memberData: Partial<Member> & { id: string }): Promise<ApiResponse> {
-  const apiUrl = getApiUrl();
-  const password = getAdminPassword();
-  
-  if (!apiUrl || !password) {
-    throw new Error('Authentication required.');
-  }
-
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: JSON.stringify({
-        password,
-        action: 'updateMember',
-        member: memberData,
-      }),
-    });
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Update member error:', error);
-    throw new Error('Failed to update member.');
-  }
-}
-
-/**
- * Renew membership (Admin only)
- */
-export async function renewMembership(renewalData: RenewalData): Promise<ApiResponse> {
-  const apiUrl = getApiUrl();
-  const password = getAdminPassword();
-  
-  if (!apiUrl || !password) {
-    throw new Error('Authentication required.');
-  }
-
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: JSON.stringify({
-        password,
-        action: 'renewMember',
-        ...renewalData,
-      }),
-    });
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Renew membership error:', error);
-    throw new Error('Failed to renew membership.');
-  }
-}
-
-/**
- * Delete member (Admin only)
- */
-export async function deleteMember(memberId: string): Promise<ApiResponse> {
-  const apiUrl = getApiUrl();
-  const password = getAdminPassword();
-  
-  if (!apiUrl || !password) {
-    throw new Error('Authentication required.');
-  }
-
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: JSON.stringify({
-        password,
-        action: 'deleteMember',
-        memberId,
-      }),
-    });
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Delete member error:', error);
-    throw new Error('Failed to delete member.');
-  }
-}
-
-/**
- * Verify admin password by attempting to fetch all members
+ * Verify admin password
  */
 export async function verifyAdminPassword(password: string): Promise<boolean> {
   const apiUrl = getApiUrl();
-  
-  if (!apiUrl) {
-    throw new Error('API URL not configured.');
-  }
+  const url = `${apiUrl}?action=getAll&password=${encodeURIComponent(password)}`;
 
-  try {
-    const url = `${apiUrl}?action=getAll&password=${encodeURIComponent(password)}`;
-    const response = await fetch(url);
-    const data = await response.json();
-    
-    if (data.success) {
-      setAdminPassword(password);
-      return true;
-    }
-    return false;
-  } catch {
-    return false;
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (data.success) {
+    setAdminPassword(password);
+    return true;
   }
+  return false;
 }
