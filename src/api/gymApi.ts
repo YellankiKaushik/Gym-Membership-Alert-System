@@ -10,78 +10,54 @@ import type {
   RenewalData
 } from '../types/member';
 
-/**
- * CHANGE 1:
- * Hard-set your deployed Google Apps Script Web App URL here
- * (This guarantees requests always hit the sheet)
- */
+// ✅ FIXED: Hardcoded correct Apps Script URL
 const DEFAULT_API_URL =
   'https://script.google.com/macros/s/AKfycby-_1PSNwCKbjGwFDnFCbxb37_1ZJaBEZkuCKhqIEdxisWuvAVT9cmyq9HWOLcAEnx3/exec';
 
-
-// Helper function to get the API URL
+// API URL helper
 export function getApiUrl(): string {
   return localStorage.getItem('gymApiUrl') || DEFAULT_API_URL;
 }
 
-// Helper function to set the API URL (optional override)
-export function setApiUrl(url: string): void {
-  localStorage.setItem('gymApiUrl', url);
-}
-
-// Helper function to get admin password
+// Admin password helpers
 export function getAdminPassword(): string {
   return sessionStorage.getItem('gymAdminPassword') || '';
 }
 
-// Helper function to set admin password (session only)
 export function setAdminPassword(password: string): void {
   sessionStorage.setItem('gymAdminPassword', password);
 }
 
-// Helper function to clear admin session
 export function clearAdminSession(): void {
   sessionStorage.removeItem('gymAdminPassword');
 }
 
-// Check if admin is logged in
 export function isAdminLoggedIn(): boolean {
   return !!sessionStorage.getItem('gymAdminPassword');
 }
 
-/**
- * Public: Look up member by ID
- * (Uses GET → correct for your Apps Script doGet)
- */
-export async function lookupMember(memberId: string): Promise<MemberLookupResponse> {
-  const apiUrl = getApiUrl();
+/* -------------------- PUBLIC API -------------------- */
 
-  const url = `${apiUrl}?action=lookup&id=${encodeURIComponent(memberId)}`;
-  const response = await fetch(url);
-  return response.json();
+export async function lookupMember(
+  memberId: string
+): Promise<MemberLookupResponse> {
+  const url = `${getApiUrl()}?action=lookup&id=${encodeURIComponent(memberId)}`;
+  return (await fetch(url)).json();
 }
 
-/**
- * Admin: Get all members
- * (Uses GET → correct for doGet)
- */
 export async function getAllMembers(): Promise<MembersListResponse> {
-  const apiUrl = getApiUrl();
   const password = getAdminPassword();
-
-  const url = `${apiUrl}?action=getAll&password=${encodeURIComponent(password)}`;
-  const response = await fetch(url);
-  return response.json();
+  const url = `${getApiUrl()}?action=getAll&password=${encodeURIComponent(password)}`;
+  return (await fetch(url)).json();
 }
 
-/**
- * CHANGE 2:
- * All CRUD actions → POST → JSON body → action + password
- */
+/* -------------------- ADMIN CRUD -------------------- */
 
 export async function addMember(
   memberData: NewMemberData
 ): Promise<ApiResponse> {
+  console.log('ADD MEMBER CLICKED → sending to Apps Script', memberData);
+
   return postAdminAction({
     action: 'addMember',
     member: memberData
@@ -91,6 +67,8 @@ export async function addMember(
 export async function updateMember(
   memberData: Partial<Member> & { id: string }
 ): Promise<ApiResponse> {
+  console.log('UPDATE MEMBER →', memberData);
+
   return postAdminAction({
     action: 'updateMember',
     member: memberData
@@ -100,6 +78,8 @@ export async function updateMember(
 export async function renewMembership(
   renewalData: RenewalData
 ): Promise<ApiResponse> {
+  console.log('RENEW MEMBER →', renewalData);
+
   return postAdminAction({
     action: 'renewMember',
     ...renewalData
@@ -109,24 +89,26 @@ export async function renewMembership(
 export async function deleteMember(
   memberId: string
 ): Promise<ApiResponse> {
+  console.log('DELETE MEMBER →', memberId);
+
   return postAdminAction({
     action: 'deleteMember',
     memberId
   });
 }
 
-/**
- * Centralized POST helper
- * (Ensures all requests hit Apps Script correctly)
- */
+/* -------------------- CORE POST HANDLER -------------------- */
+
 async function postAdminAction(payload: any): Promise<ApiResponse> {
   const apiUrl = getApiUrl();
   const password = getAdminPassword();
 
+  console.log('POST →', apiUrl, payload);
+
   const response = await fetch(apiUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'text/plain' // REQUIRED for Apps Script
+      'Content-Type': 'application/json'   // ✅ IMPORTANT FIX
     },
     body: JSON.stringify({
       password,
@@ -137,15 +119,13 @@ async function postAdminAction(payload: any): Promise<ApiResponse> {
   return response.json();
 }
 
-/**
- * Verify admin password
- */
-export async function verifyAdminPassword(password: string): Promise<boolean> {
-  const apiUrl = getApiUrl();
-  const url = `${apiUrl}?action=getAll&password=${encodeURIComponent(password)}`;
+/* -------------------- AUTH -------------------- */
 
-  const response = await fetch(url);
-  const data = await response.json();
+export async function verifyAdminPassword(
+  password: string
+): Promise<boolean> {
+  const url = `${getApiUrl()}?action=getAll&password=${encodeURIComponent(password)}`;
+  const data = await (await fetch(url)).json();
 
   if (data.success) {
     setAdminPassword(password);
