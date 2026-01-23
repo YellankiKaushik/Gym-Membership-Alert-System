@@ -12,7 +12,7 @@ import type {
 
 // ✅ FIXED: Hardcoded correct Apps Script URL
 const DEFAULT_API_URL =
-  'https://script.google.com/macros/s/AKfycby-_1PSNwCKbjGwFDnFCbxb37_1ZJaBEZkuCKhqIEdxisWuvAVT9cmyq9HWOLcAEnx3/exec';
+  'https://script.google.com/macros/s/AKfycbx9Q1y8_ujKpg_VwnKPCGucQV2EZti2sOFnvkIv6Vndi1RL5CKKpplYGJbKzky1YUE7/exec';
 
 // API URL helper
 export function getApiUrl(): string {
