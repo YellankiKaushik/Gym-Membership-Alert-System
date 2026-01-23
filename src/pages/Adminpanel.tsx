@@ -642,19 +642,24 @@ export default function AdminPanel() {
                     />
                   </div>
                   <button
-                    onClick={modal === 'add' ? handleAddMember : handleEditMember}
-                    disabled={loading}
-                    className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  type="button"
+                  onClick={() => {
+                    if (modal === 'add') handleAddMember();
+                    if (modal === 'edit') handleEditMember();
+                  }}
+                  disabled={loading}
+                  className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
-                      <>
-                        <Save className="w-5 h-5" />
-                        {modal === 'add' ? 'Add Member' : 'Save Changes'}
-                      </>
-                    )}
+                    <>
+                    <Save className="w-5 h-5" />
+                    {modal === 'add' ? 'Add Member' : 'Save Changes'}
+                    </>
+                  )}
                   </button>
+
                 </div>
               )}
 
