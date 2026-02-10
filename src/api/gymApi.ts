@@ -10,16 +10,23 @@ import type {
   RenewalData
 } from '../types/member';
 
-// ✅ FIXED: Hardcoded correct Apps Script URL
+// ✅ Hardcoded correct Apps Script URL
 const DEFAULT_API_URL =
   'https://script.google.com/macros/s/AKfycbx9Q1y8_ujKpg_VwnKPCGucQV2EZti2sOFnvkIv6Vndi1RL5CKKpplYGJbKzky1YUE7/exec';
 
-// API URL helper
+/* -------------------- API URL HELPERS -------------------- */
+
+// ✅ REQUIRED for Setup.tsx
+export function setApiUrl(url: string): void {
+  localStorage.setItem('gymApiUrl', url);
+}
+
 export function getApiUrl(): string {
   return localStorage.getItem('gymApiUrl') || DEFAULT_API_URL;
 }
 
-// Admin password helpers
+/* -------------------- AUTH HELPERS -------------------- */
+
 export function getAdminPassword(): string {
   return sessionStorage.getItem('gymAdminPassword') || '';
 }
@@ -56,7 +63,7 @@ export async function getAllMembers(): Promise<MembersListResponse> {
 export async function addMember(
   memberData: NewMemberData
 ): Promise<ApiResponse> {
-  console.log('ADD MEMBER CLICKED → sending to Apps Script', memberData);
+  console.log('ADD MEMBER →', memberData);
 
   return postAdminAction({
     action: 'addMember',
@@ -67,8 +74,6 @@ export async function addMember(
 export async function updateMember(
   memberData: Partial<Member> & { id: string }
 ): Promise<ApiResponse> {
-  console.log('UPDATE MEMBER →', memberData);
-
   return postAdminAction({
     action: 'updateMember',
     member: memberData
@@ -78,8 +83,6 @@ export async function updateMember(
 export async function renewMembership(
   renewalData: RenewalData
 ): Promise<ApiResponse> {
-  console.log('RENEW MEMBER →', renewalData);
-
   return postAdminAction({
     action: 'renewMember',
     ...renewalData
@@ -89,27 +92,24 @@ export async function renewMembership(
 export async function deleteMember(
   memberId: string
 ): Promise<ApiResponse> {
-  console.log('DELETE MEMBER →', memberId);
-
   return postAdminAction({
     action: 'deleteMember',
     memberId
   });
 }
 
-/* -------------------- CORE POST HANDLER -------------------- */
+/* -------------------- CORE ACTION HANDLER -------------------- */
 
 async function postAdminAction(payload: any): Promise<ApiResponse> {
   const apiUrl = getApiUrl();
   const password = getAdminPassword();
 
-  console.log('POST →', apiUrl, payload);
-
   const response = await fetch(apiUrl, {
     method: 'POST',
     headers: {
+      // ✅ REQUIRED for Apps Script + GitHub Pages
       'Content-Type': 'text/plain;charset=utf-8'
-    },    
+    },
     body: JSON.stringify({
       password,
       ...payload
@@ -119,7 +119,7 @@ async function postAdminAction(payload: any): Promise<ApiResponse> {
   return response.json();
 }
 
-/* -------------------- AUTH -------------------- */
+/* -------------------- VERIFY ADMIN -------------------- */
 
 export async function verifyAdminPassword(
   password: string
